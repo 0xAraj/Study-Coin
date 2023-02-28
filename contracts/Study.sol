@@ -16,6 +16,7 @@ pragma solidity >=0.7.0 <0.9.0;
 // event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
 contract Study {
+    // State Variables
     string public name = "Study";
     string public symbol = "STD";
     uint256 public decimals = 0;
@@ -24,18 +25,21 @@ contract Study {
     mapping(address => uint256) public balances;
     mapping(address => mapping(address => uint256)) public approved;
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    //Events
+    event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
-        address indexed _owner,
-        address indexed _spender,
-        uint256 _value
+        address indexed owner,
+        address indexed spender,
+        uint256 value
     );
 
+    //Constructor
     constructor() {
         founder = msg.sender;
         balances[founder] = totalSupply;
     }
 
+    //Functions
     function balanceOf(address owner) public view returns (uint256 balance) {
         return balances[owner];
     }
@@ -58,7 +62,10 @@ contract Study {
         public
         returns (bool success)
     {
-        require(balances[msg.sender] >= tokens);
+        require(
+            balances[msg.sender] >= tokens,
+            "You do not have enough tokens"
+        );
         require(tokens > 0);
         approved[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
@@ -78,7 +85,7 @@ contract Study {
         address to,
         uint256 tokens
     ) public returns (bool success) {
-        require(approved[from][to] >= tokens);
+        require(approved[from][to] >= tokens, "You do not have approval");
         require(balances[from] >= tokens);
         balances[from] -= tokens;
         balances[to] += tokens;
